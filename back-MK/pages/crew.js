@@ -10,13 +10,18 @@ router.get("/all", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const list = await crew.find({}).exec(function (err, res) {
+  await crew.find({}).exec(function (err, res) {
     if (err) {
       console.log(err);
     } else {
       res.send(res);
     }
   });
+});
+
+router.get("/:id", async (req, res) => {
+  const item = await crew.findById(req.params.id);
+  res.status(201).send(item);
 });
 
 /** add new crew */
@@ -38,6 +43,13 @@ router.delete("/:id", (req, res) => {
       res.status(204).send();
     })
     .catch((err) => res.status(400).send(err));
+});
+
+router.put("/:id", (req, res) => {
+  crew
+    .findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(() => res.status(200).send())
+    .catch((err) => res.status(500).send(err));
 });
 
 module.exports = router;
